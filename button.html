@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tu IncaKola</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Extras solo para esta página */
+    .escena img {
+      flex: 0.9;                /* la imagen ocupa el espacio que sobra */
+      min-height: 0;          /* deja que se encoja si hace falta */
+      width: 100%;
+      object-fit: contain;    /* se ve completa, sin deformarse */
+    }
+    #mensaje { text-align: center; }                    /* texto centrado en la caja */
+    #mensaje button { background: var(--saffron); }     /* el botón resalta dentro de la caja clara */
+  </style>
+</head>
+<body>
+  <div class="escena">
+    <h1>¡Reclama tu IncaKola!</h1>
+
+    <img src="Miaus.jpg" alt="Una IncaKola">
+
+    <div class="pie">
+
+      <section id="mensaje">
+        <p>Veamonos el miercoles o dime tu salon para hacer entrega del regalo. uwu</p>
+        <button type="button" id="volver">Volver</button>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    // Botón "Volver": regresa a la página principal
+    document.getElementById("volver").addEventListener("click", () => {
+      window.location.href = "index.html";
+    });
+  </script>
+</body>
+</html>

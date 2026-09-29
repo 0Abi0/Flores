@@ -1,0 +1,170 @@
+
+:root {
+  --royal-gold: #ffe169;      /* TEXTO 1: título | LUZ del foco | fondo del BOTÓN y de la CAJA DEL MENSAJE | brillo del PÉTALO (script.js) */
+  --saffron: #edc531;         /* BORDE del botón | botón al pasar el mouse | PÉTALO del frente (script.js) */
+  --golden-bronze: #c9a227;   /* TALLOS | PÉTALOS de atrás (script.js) */
+  --dark-goldenrod: #a47e1b;  /* HOJAS */
+  --olive-bark: #805b10;      /* TEXTO 2: letras sobre el botón y la caja del mensaje */
+  --oscuridad: #1a1206;       /* EXTRA: el cuarto oscuro, fondo de toda la pantalla */
+  --ink-black: #03071eff;
+  --lime-moss: #aab03cff;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;   /* centra el cuadro en la pantalla */
+  overflow: hidden;      /* nada de barras de scroll */
+  background: var(--ink-black);     /* fondo de la pantalla (oscuro) */
+  color: var(--royal-gold);        /* TEXTO 1 (color de texto por defecto) */
+  font-family: Georgia, "Times New Roman", serif;
+  line-height: 1.5;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-image: url("Incakola.png");
+  background-size: clamp(88px, 14vw, 144px) auto;   
+  opacity: 0.03;                                   
+  pointer-events: none;
+}
+
+.escena {
+  --w: min(96vw, 76vh);
+  position: relative;
+  width: var(--w);
+  height: calc(var(--w) * 1.25);
+  padding: calc(var(--w) * 0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+/* El haz de luz: mismo cuadrilátero de antes, pero con los lados izquierdo y derecho suavizados.*/
+.escena::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: -60vh;                        /* empieza fuera de la pantalla */
+  left: -150%;                       /* caja ancha para que el haz nunca se corte a los lados */
+  width: 400%;
+  height: calc(100% + 60vh);
+  /* Forma: cono hacia abajo de 36deg de apertura (centro en 18deg).
+     Cada lado sube en 6deg desde 0 hasta la luz completa: ESE es el ancho del suavizado. */
+  background: conic-gradient(
+    from 162deg at 50% 0%,                                        /* origen: arriba al centro */
+    transparent 0deg,                                             /* borde izquierdo: sin luz */
+    color-mix(in srgb, var(--royal-gold) 8%, transparent) 1.5deg,
+    color-mix(in srgb, var(--royal-gold) 24%, transparent) 3.5deg,
+    color-mix(in srgb, var(--royal-gold) 38%, transparent) 6deg,  /* luz completa */
+    color-mix(in srgb, var(--royal-gold) 38%, transparent) 30deg, /* luz completa */
+    color-mix(in srgb, var(--royal-gold) 24%, transparent) 32.5deg,
+    color-mix(in srgb, var(--royal-gold) 8%, transparent) 34.5deg,
+    transparent 36deg,                                            /* borde derecho: sin luz */
+    transparent 360deg
+  );
+  /* Desvanecido vertical: fuerte arriba, se apaga abajo */
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.68) 45%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.68) 45%, transparent 100%);
+  pointer-events: none;
+}
+
+/* El resplandor: una mancha de luz suave alrededor de los tulipanes */
+.escena::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  left: 50%;
+  top: 58%;
+  width: 150%;
+  height: 100%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--royal-gold) 22%, transparent), transparent);
+  pointer-events: none;
+}
+
+/* Todo el contenido queda por encima de la luz */
+.escena > * { position: relative; z-index: 1; }
+
+/* Todos los tamaños salen de --w, así escalan con el cuadro */
+h1 {
+  margin: 0;
+  text-align: center;
+  font-size: calc(var(--w) * 0.075);
+  font-weight: normal;
+  line-height: 1.2;
+  text-shadow: 0 0 0.4em var(--oscuridad);   /* sombra oscura para que se lea sobre la luz */
+  /* el color del título es TEXTO 1 (royal-gold), heredado del body */
+}
+
+#ramo {
+  filter: drop-shadow(0 0 calc(var(--w) * 0.02) color-mix(in srgb, var(--royal-gold) 45%, transparent));  /* brillo alrededor de las flores */
+  flex: 1;
+  min-height: 0;   /* deja que el dibujo se encoja si hace falta */
+  width: 100%;
+}
+
+.pie {
+  height: calc(var(--w) * 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tallo { stroke: var(--lime-moss); stroke-width: 5; fill: none; stroke-linecap: round; }  /* color de los TALLOS */
+.hoja  { fill: var(--lime-moss); }                                                            /* color de las HOJAS */
+
+/* Los colores de los PÉTALOS están en script.js (golden-bronze, saffron y royal-gold) */
+
+/* Cada tulipán crece desde su base */
+.flor {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: crecer 1s ease-out both;
+}
+@keyframes crecer {
+  from { transform: scale(0); }
+  to   { transform: scale(1); }
+}
+
+button {
+  padding: 0.6em 1.6em;
+  font: inherit;
+  font-size: calc(var(--w) * 0.045);
+  color: var(--olive-bark);            /* TEXTO 2: letras del botón */
+  background: var(--royal-gold);       /* fondo del botón */
+  border: 2px solid var(--saffron);    /* borde del botón */
+  border-radius: 999px;
+  cursor: pointer;
+}
+button:hover { background: var(--saffron); }                     /* fondo del botón al pasar el mouse */
+button:focus-visible { outline: 3px solid var(--royal-gold); outline-offset: 3px; }  /* contorno al navegar con teclado */
+
+#mensaje {
+  width: 100%;
+  max-height: 100%;
+  overflow: auto;
+  padding: 0.6em 1em;
+  font-size: calc(var(--w) * 0.04);
+  background: var(--royal-gold);   
+  color: var(--olive-bark);       
+  border-radius: 12px;
+  animation: aparecer 0.6s ease-out;
+}
+#mensaje[hidden] { display: none; }
+#mensaje p { margin: 0.3em 0; }
+.firma { text-align: right; font-style: italic; }
+
+@keyframes aparecer {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flor, #mensaje { animation: none; }
+}
